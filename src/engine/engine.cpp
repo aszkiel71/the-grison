@@ -47,7 +47,23 @@ class Engine {
             resetBoard();
         }
         
-        
+    
+    INLINE void displayMove(int from, int to, int prom = -1){
+        char fromRow = 'a' + (from % 8);
+        char fromRank = '1' + (from / 8);
+        char toRow = 'a' + (to % 8);
+        char toRank = '1' + (to / 8);
+        std::cout << fromRow << fromRank << toRow << toRank;
+        if(prom != -1){
+            if(prom == 4) std::cout << "q";
+            else if(prom == 3) std::cout << "r";
+            else if(prom == 2) std::cout << "b";
+            else if(prom == 1) std::cout << "n";
+        }
+        std::cout << "\n";
+    }
+
+
     INLINE void genWhitePawn(vector<Move>& moves){
         u64 w_Pawns = pieces[0] & color[0];
 
@@ -150,6 +166,7 @@ class Engine {
     INLINE vector<Move> generateMoves(bool t){
         vector<Move> moves;
         genWhitePawn(moves);
+        return moves;
     }
 
 
@@ -167,7 +184,7 @@ class Engine {
 
     INLINE void movePiece(int from, int to, bool t, int figure){
         assert(figure < 6); assert(from < 64); assert(to < 64); assert(from != to);
-        std::cout << figure << "\n";
+        //std::cout << figure << "\n";
         u64 from_mask = 1ULL << from;
         u64 to_mask = 1ULL << to;
         bool is_capture = to_mask & color[!t];
@@ -229,7 +246,10 @@ class Engine {
 int main(){
     Engine e;
     e.displayBoard();
-    int f, t, p; std::cin >> f >> t >> p;
-    e.movePiece(f, t, 0, p);
-    e.displayBoard();
+    vector<Move> mv = e.generateMoves(0);
+    int i = 0;
+    for(auto k : mv){
+        std::cout << ++i << " : ";
+        e.displayMove(k.from, k.to);
+    }
 }
